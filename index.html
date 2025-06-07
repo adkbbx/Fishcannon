@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐟💥 Fishcannon - Interactive Aquatic Animation</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/uploaders.css">
+    <link rel="stylesheet" href="css/controls.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="app-title">
+                <span class="fish-icon">🐟</span>
+                Fishcannon
+                <span class="cannon-icon">💥</span>
+            </h1>
+            <p class="app-subtitle">Interactive Aquatic Animation</p>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="app-container">
+        
+                <!-- Canvas Container - Multi-layer system -->
+        <div class="canvas-container" id="canvasContainer">
+            <!-- Layer 1: Background (Sky) -->
+            <canvas id="backgroundCanvas" class="canvas-layer background-layer"></canvas>
+            
+            <!-- Layer 2: Fish (Between background and foreground) -->
+            <canvas id="fishCanvas" class="canvas-layer fish-layer"></canvas>
+            
+            <!-- Layer 3: Foreground (Water/Land with transparency) -->
+            <canvas id="foregroundCanvas" class="canvas-layer foreground-layer"></canvas>
+            
+            <!-- Layer 4: Animation (Bubbles, particles) -->
+            <canvas id="animationCanvas" class="canvas-layer animation-layer"></canvas>
+            
+            <!-- Layer 5: UI (Controls, indicators, overlays) -->
+            <canvas id="uiCanvas" class="canvas-layer ui-layer"></canvas>
+
+            <!-- Interactive positioning elements -->
+            <div class="position-indicators">
+                <div id="fishIndicator" class="position-indicator fish-indicator" title="Drag to position fish">
+                    🐟
+                </div>
+                <div id="targetIndicator" class="position-indicator target-indicator" title="Drag to set target">
+                    🎯
+                </div>
+            </div>
+
+            <!-- Keyboard shortcuts help -->
+            <div class="keyboard-shortcuts" id="keyboardShortcuts">
+                <div class="shortcut-item">
+                    <span class="shortcut-key">Space</span>
+                    <span class="shortcut-description">Fire Bubble</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">I</span>
+                    <span class="shortcut-description">Toggle Indicators</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">H</span>
+                    <span class="shortcut-description">Toggle Panels</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panels -->
+        <div class="control-panels">
+            
+            <!-- Image Upload Panel -->
+            <section class="control-panel upload-panel">
+                <h2 class="panel-title">📷 Scene & Character Images</h2>
+                
+                <!-- Upload Tabs -->
+                <div class="upload-tabs">
+                    <button class="tab-button active" data-tab="character" id="characterTab">👥 Characters</button>
+                    <button class="tab-button" data-tab="background" id="backgroundTab">🏞️ Background</button>
+                    <button class="tab-button" data-tab="foreground" id="foregroundTab">🌊 Foreground</button>
+                </div>
+                
+                <!-- Character Images Tab -->
+                <div class="tab-content active" id="characterTabContent">
+                    <div class="upload-section">
+                        <h3 class="upload-title">Character Images (Bubble Contents)</h3>
+                        <div class="upload-zone" id="peopleUpload">
+                            <div class="upload-content">
+                                <span class="upload-icon">👥</span>
+                                <p class="upload-text">Drop character images here or click to browse</p>
+                                <input type="file" id="peopleInput" accept="image/*,video/*,.gif" multiple>
+                            </div>
+                            <div class="uploaded-images" id="peopleImages"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Background Images Tab -->
+                <div class="tab-content" id="backgroundTabContent">
+                    <div class="upload-section">
+                        <h3 class="upload-title">Background Images/Videos</h3>
+                        <div class="upload-zone" id="backgroundUpload">
+                            <div class="upload-content">
+                                <span class="upload-icon">🏞️</span>
+                                <p class="upload-text">Drop background images/videos here or click to browse</p>
+                                <input type="file" id="backgroundInput" accept="image/*,video/*" multiple>
+                            </div>
+                            <div class="uploaded-images" id="backgroundImages"></div>
+                        </div>
+                        <div class="media-controls" id="backgroundControls">
+                            <div class="control-item">
+                                <label for="backgroundCycleInterval">Cycle Interval (seconds):</label>
+                                <input type="range" id="backgroundCycleInterval" min="1" max="10" value="2" step="0.5">
+                                <span id="backgroundCycleValue">2.0</span>
+                            </div>
+                            <button class="action-button secondary-button" id="backgroundCycleToggle">
+                                <span class="button-icon">⏸️</span>
+                                Pause Cycling
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Foreground Images Tab -->
+                <div class="tab-content" id="foregroundTabContent">
+                    <div class="upload-section">
+                        <h3 class="upload-title">Foreground Images/Videos</h3>
+                        <div class="upload-zone" id="foregroundUpload">
+                            <div class="upload-content">
+                                <span class="upload-icon">🌊</span>
+                                <p class="upload-text">Drop foreground images/videos here or click to browse</p>
+                                <input type="file" id="foregroundInput" accept="image/*,video/*" multiple>
+                            </div>
+                            <div class="uploaded-images" id="foregroundImages"></div>
+                        </div>
+                        <div class="media-controls" id="foregroundControls">
+                            <div class="control-item">
+                                <label for="foregroundCycleInterval">Cycle Interval (seconds):</label>
+                                <input type="range" id="foregroundCycleInterval" min="1" max="10" value="2" step="0.5">
+                                <span id="foregroundCycleValue">2.0</span>
+                            </div>
+                            <button class="action-button secondary-button" id="foregroundCycleToggle">
+                                <span class="button-icon">⏸️</span>
+                                Pause Cycling
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Animation Controls Panel -->
+            <section class="control-panel animation-panel">
+                <h2 class="panel-title">🎮 Animation Controls</h2>
+                
+                <!-- Test Controls -->
+                <div class="control-group">
+                    <h3 class="control-title">Manual Controls</h3>
+                    <button id="testFireButton" class="action-button primary-button">
+                        <span class="button-icon">🚀</span>
+                        Test Fire Bubble
+                    </button>
+                    <button id="resetPositionsButton" class="action-button secondary-button">
+                        <span class="button-icon">↩️</span>
+                        Reset Positions
+                    </button>
+                    <button id="toggleIndicatorsButton" class="action-button toggle-button">
+                        <span class="button-icon">👁️</span>
+                        <span id="indicatorsButtonText">Hide Indicators</span>
+                    </button>
+                    
+                    <!-- Multi-Target Mode Controls -->
+                    <div class="multi-mode-controls">
+                        <button id="toggleMultiModeButton" class="action-button toggle-button">
+                            <span class="button-icon">🎯</span>
+                            <span id="multiModeButtonText">Enable Multi-Mode</span>
+                        </button>
+                        
+                        <div id="multiModeControls" class="multi-mode-panel" style="display: none;">
+                            <div id="multiModeHelp" class="help-text">
+                                <p><strong>Drag:</strong> Move fish 🐟 and targets 🎯</p>
+                                <p><strong>+ button:</strong> Add new position</p>
+                                <p><strong>− button:</strong> Remove position</p>
+                                <div id="positionCounts" class="position-counts">
+                                    Fish: <span id="fishCount">1</span> | Targets: <span id="targetCount">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bubble Settings -->
+                <div class="control-group">
+                    <h3 class="control-title">Bubble Settings</h3>
+                    <div class="parameter-controls">
+                        <div class="parameter-control">
+                            <label for="bubbleSizeSlider">Bubble Size</label>
+                            <input type="range" id="bubbleSizeSlider" min="20" max="80" value="40" step="5">
+                            <span id="bubbleSizeValue">40</span>
+                        </div>
+                        <div class="parameter-control">
+                            <label for="characterSizeSlider">Character Size After Pop</label>
+                            <input type="range" id="characterSizeSlider" min="10" max="100" value="50" step="5">
+                            <span id="characterSizeValue">50</span>
+                        </div>
+                        <div class="parameter-control">
+                            <label for="spriteSizeSlider">Fish Sprite Size</label>
+                            <input type="range" id="spriteSizeSlider" min="50" max="200" value="100" step="10">
+                            <span id="spriteSizeValue">100</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>&copy; 2025 Fishcannon Project | Built with ❤️ and lots of bubbles</p>
+    </footer>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
